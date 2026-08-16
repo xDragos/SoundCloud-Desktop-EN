@@ -1,0 +1,7 @@
+[env]
+PKG_CONFIG_PATH = { value = "/Users/runner/opus-ios-sim/lib/pkgconfig", force = true }
+PKG_CONFIG_ALLOW_CROSS = { value = "1", force = true }
+PKG_CONFIG_ALLOW_CROSS_aarch64-apple-ios-sim = { value = "1", force = true }
+OPUS_LIB_DIR = { value = "/Users/runner/opus-ios-sim/lib", force = true }
+LIBOPUS_LIB_DIR = { value = "/Users/runner/opus-ios-sim/lib", force = true }
+LIBOPUS_STATIC = { value = "1", force = true }
