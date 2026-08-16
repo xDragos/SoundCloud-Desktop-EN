@@ -4,29 +4,36 @@ on:
   push:
     branches:
       - ios-build
+
 jobs:
   build-ios:
     runs-on: macos-latest
     env:
       CI: true
       npm_config_confirm_modules_purge: "false"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 11
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-apple-ios-sim
+
       - name: Install build tools
         run: brew install autoconf automake libtool pkg-config
+
       - name: Build Opus for iOS Simulator (arm64)
         run: |
           set -e
@@ -34,61 +41,77 @@ jobs:
           curl -L "https://downloads.xiph.org/releases/opus/opus-${OPUS_VERSION}.tar.gz" -o /tmp/opus.tar.gz
           tar xzf /tmp/opus.tar.gz -C /tmp
           cd "/tmp/opus-${OPUS_VERSION}"
+
           SDK=iphonesimulator
           ARCH=arm64
           MIN_VERSION=13.0
           SDKROOT=$(xcrun --sdk "$SDK" --show-sdk-path)
           PREFIX="$HOME/opus-ios-sim"
+
           export CC="$(xcrun --sdk "$SDK" --find clang)"
           export CFLAGS="-arch $ARCH -isysroot $SDKROOT -mios-simulator-version-min=$MIN_VERSION"
           export LDFLAGS="-arch $ARCH -isysroot $SDKROOT -mios-simulator-version-min=$MIN_VERSION"
-          ./configure --host=aarch64-apple-darwin --disable-shared --enable-static --disable-doc --disable-extra-programs --prefix="$PREFIX"
+
+          ./configure             --host=aarch64-apple-darwin             --disable-shared             --enable-static             --disable-doc             --disable-extra-programs             --prefix="$PREFIX"
+
           make -j"$(sysctl -n hw.ncpu)"
           make install
 
-          mkdir -p "$GITHUB_WORKSPACE/desktop/.cargo"
-          cat > "$GITHUB_WORKSPACE/desktop/.cargo/config.toml" <<EOF
-[env]
-OPUS_NO_PKG = "1"
-OPUS_LIB_DIR = "$PREFIX/lib"
-OPUS_STATIC = "1"
-LIBOPUS_LIB_DIR = "$PREFIX/lib"
-LIBOPUS_STATIC = "1"
-EOF
-
-          echo "=== Opus verification ==="
-          ls -lah "$PREFIX/lib"
           test -f "$PREFIX/lib/libopus.a"
+
+          echo "OPUS_NO_PKG_CONFIG=1" >> "$GITHUB_ENV"
+          echo "OPUS_LIB_DIR=$PREFIX/lib" >> "$GITHUB_ENV"
+          echo "LIBOPUS_LIB_DIR=$PREFIX/lib" >> "$GITHUB_ENV"
+          echo "OPUS_STATIC=1" >> "$GITHUB_ENV"
+          echo "LIBOPUS_STATIC=1" >> "$GITHUB_ENV"
+
+          echo "=== Opus ==="
+          ls -lah "$PREFIX/lib"
+
       - name: Install frontend dependencies
         working-directory: desktop
         run: pnpm install --frozen-lockfile
+
       - name: Disable Homebrew tap trust check
         run: echo "HOMEBREW_NO_REQUIRE_TAP_TRUST=1" >> "$GITHUB_ENV"
+
       - name: Initialize iOS
         working-directory: desktop
         run: pnpm tauri ios init
+
       - name: Sync dependencies before Xcode build
         working-directory: desktop
         run: pnpm install --frozen-lockfile --prefer-offline
+
       - name: Build iOS Simulator
         working-directory: desktop
         run: |
-          export OPUS_NO_PKG=1
+          export OPUS_NO_PKG_CONFIG=1
           export OPUS_LIB_DIR="$HOME/opus-ios-sim/lib"
           export LIBOPUS_LIB_DIR="$HOME/opus-ios-sim/lib"
           export OPUS_STATIC=1
           export LIBOPUS_STATIC=1
+
+          echo "OPUS_LIB_DIR=$OPUS_LIB_DIR"
           test -f "$OPUS_LIB_DIR/libopus.a"
+
           pnpm tauri ios build --target aarch64-sim
+
       - name: Find Simulator App
         working-directory: desktop
         run: find src-tauri/gen/apple -type d -name "*.app" -print
+
       - name: Package Simulator App
         working-directory: desktop
         run: |
           APP=$(find src-tauri/gen/apple -type d -name "*.app" | head -1)
-          test -n "$APP"
+          if [ -z "$APP" ]; then
+            echo "ERROR: Simulator .app not found"
+            exit 1
+          fi
+          echo "Found: $APP"
           ditto -c -k --sequesterRsrc --keepParent "$APP" SoundCloud-iOS-Simulator.zip
+
       - name: Upload Simulator App
         uses: actions/upload-artifact@v4
         with:
