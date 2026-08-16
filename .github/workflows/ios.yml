@@ -7,8 +7,10 @@ on:
       - ios-build
 
 jobs:
-  build-ios:
+build-ios:
     runs-on: macos-latest
+    env:
+      CI: true
 
     steps:
       - name: Checkout
