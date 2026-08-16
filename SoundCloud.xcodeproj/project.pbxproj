@@ -1,0 +1,86 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+		13B07F861A680F5B00A75B9A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = SoundCloud/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		13B07F8E1A680F5B00A75B9A /* SoundCloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoundCloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02A4C71E0B4A5D00B83013 /* SoundCloud */ = {isa = PBXGroup; children = (13B07F861A680F5B00A75B9A /* LaunchScreen.storyboard */); name = SoundCloud; sourceTree = "<group>"; };
+		8323D8041AAA6A9700B99B32 /* Custom */ = {isa = PBXGroup; children = (2D02A4C71E0B4A5D00B83013 /* SoundCloud */, 13B07F8E1A680F5B00A75B9A /* SoundCloud.app */); sourceTree = "<group>"; };
+		83C6D4131581CC2A00271790 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 83C6D4141581CC2A00271790 /* Build configuration list for PBXProject "SoundCloud" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = ( en, Base );
+			mainGroup = 8323D8041AAA6A9700B99B32 /* Custom */;
+			productRefGroup = 8323D8041AAA6A9700B99B32 /* Custom */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = ( 13B07F8C1A680F5B00A75B9A /* SoundCloud */ );
+		};
+		13B07F8C1A680F5B00A75B9A /* SoundCloud */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SoundCloud" */;
+			buildPhases = ( );
+			buildRules = ( );
+			dependencies = ( );
+			name = SoundCloud;
+			productName = SoundCloud;
+			productReference = 13B07F8E1A680F5B00A75B9A /* SoundCloud.app */;
+			productType = "com.apple.product-type.application";
+		};
+		83C6D4141581CC2A00271790 /* Build configuration list for PBXProject "SoundCloud" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = ( 83C6D4151581CC2A00271790 /* Debug */, 83C6D4161581CC2A00271790 /* Release */ );
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SoundCloud" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = ( 13B07F941A680F5B00A75B9A /* Debug */, 13B07F951A680F5B00A75B9A /* Release */ );
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83C6D4151581CC2A00271790 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		83C6D4161581CC2A00271790 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		13B07F941A680F5B00A75B9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = com.dragos.soundcloud;
+				PRODUCT_NAME = SoundCloud;
+			};
+			name = Debug;
+		};
+		13B07F951A680F5B00A75B9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = com.dragos.soundcloud;
+				PRODUCT_NAME = SoundCloud;
+			};
+			name = Release;
+		};
+	};
+	rootObject = 83C6D4131581CC2A00271790 /* Project object */;
+}
