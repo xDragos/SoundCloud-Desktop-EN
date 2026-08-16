@@ -47,8 +47,14 @@ jobs:
           make install
 
           mkdir -p "$GITHUB_WORKSPACE/desktop/.cargo"
-          printf "%s
-"             "[env]"             "OPUS_NO_PKG = "1""             "OPUS_LIB_DIR = "$PREFIX/lib""             "OPUS_STATIC = "1""             "LIBOPUS_LIB_DIR = "$PREFIX/lib""             "LIBOPUS_STATIC = "1""             > "$GITHUB_WORKSPACE/desktop/.cargo/config.toml"
+          cat > "$GITHUB_WORKSPACE/desktop/.cargo/config.toml" <<EOF
+[env]
+OPUS_NO_PKG = "1"
+OPUS_LIB_DIR = "$PREFIX/lib"
+OPUS_STATIC = "1"
+LIBOPUS_LIB_DIR = "$PREFIX/lib"
+LIBOPUS_STATIC = "1"
+EOF
 
           echo "=== Opus verification ==="
           ls -lah "$PREFIX/lib"
