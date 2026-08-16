@@ -9,6 +9,7 @@ jobs:
     runs-on: macos-latest
     env:
       CI: true
+      npm_config_confirm_modules_purge: "false"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
