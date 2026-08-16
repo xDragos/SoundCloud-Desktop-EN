@@ -33,6 +33,9 @@ jobs:
       - name: Initialize iOS
         working-directory: desktop
         run: pnpm tauri ios init
+      - name: Sync dependencies before Xcode build
+        working-directory: desktop
+        run: pnpm install --frozen-lockfile --prefer-offline
       - name: Build iOS Simulator
         working-directory: desktop
         run: pnpm tauri ios build --target aarch64-sim
