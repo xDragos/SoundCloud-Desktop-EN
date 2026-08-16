@@ -25,6 +25,8 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-apple-ios-sim
+      - name: Install build tools (autoconf/automake for audiopus_sys)
+        run: brew install autoconf automake libtool
       - name: Install frontend dependencies
         working-directory: desktop
         run: pnpm install --frozen-lockfile
