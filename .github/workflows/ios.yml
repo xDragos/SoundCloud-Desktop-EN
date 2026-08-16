@@ -1,4 +1,4 @@
-name: Build iOS IPA
+name: Build iOS Simulator
 
 on:
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-apple-ios
+          targets: aarch64-apple-ios-sim
 
       - name: Install frontend dependencies
         working-directory: desktop
@@ -37,17 +37,29 @@ jobs:
         working-directory: desktop
         run: pnpm tauri ios init
 
-      - name: Build iOS
+      - name: Build iOS Simulator
         working-directory: desktop
-        run: pnpm tauri ios build
+        run: pnpm tauri ios build --target aarch64-sim
 
-      - name: Find IPA
+      - name: Find Simulator App
         working-directory: desktop
-        run: find src-tauri/gen/apple -type f -name "*.ipa" -print
+        run: |
+          find src-tauri/gen/apple -type d -name "*.app" -print
 
-      - name: Upload IPA
+      - name: Package Simulator App
+        working-directory: desktop
+        run: |
+          APP=$(find src-tauri/gen/apple -type d -name "*.app" | head -1)
+          if [ -z "$APP" ]; then
+            echo "ERROR: Simulator .app not found"
+            exit 1
+          fi
+          echo "Found: $APP"
+          ditto -c -k --sequesterRsrc --keepParent "$APP" SoundCloud-iOS-Simulator.zip
+
+      - name: Upload Simulator App
         uses: actions/upload-artifact@v4
         with:
-          name: SoundCloud-iOS-IPA
-          path: desktop/src-tauri/gen/apple/**/*.ipa
+          name: SoundCloud-iOS-Simulator
+          path: desktop/SoundCloud-iOS-Simulator.zip
           if-no-files-found: error
