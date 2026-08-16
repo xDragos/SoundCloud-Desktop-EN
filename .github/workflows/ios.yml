@@ -11,6 +11,8 @@ build-ios:
     runs-on: macos-latest
     env:
       CI: true
+    env:
+      CI: true
 
     steps:
       - name: Checkout
