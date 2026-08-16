@@ -47,7 +47,7 @@ jobs:
           export LDFLAGS="-arch $ARCH -isysroot $SDKROOT -mios-simulator-version-min=$MIN_VERSION"
 
           ./configure \
-            --host=arm-apple-darwin \
+            --host=aarch64-apple-darwin \
             --disable-shared \
             --enable-static \
             --disable-doc \
