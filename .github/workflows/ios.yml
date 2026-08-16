@@ -25,8 +25,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-apple-ios-sim
-      - name: Install build tools (autoconf/automake for audiopus_sys)
-        run: brew install autoconf automake libtool
+      - name: Install build tools and prebuilt Opus
+        run: |
+          brew install autoconf automake libtool opus pkg-config
+          echo "OPUS_STATIC=1" >> "$GITHUB_ENV"
+          echo "PKG_CONFIG_ALLOW_CROSS=1" >> "$GITHUB_ENV"
+          echo "PKG_CONFIG_PATH=$(brew --prefix opus)/lib/pkgconfig" >> "$GITHUB_ENV"
       - name: Install frontend dependencies
         working-directory: desktop
         run: pnpm install --frozen-lockfile
