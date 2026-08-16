@@ -45,11 +45,12 @@ jobs:
           ./configure --host=aarch64-apple-darwin --disable-shared --enable-static --disable-doc --disable-extra-programs --prefix="$PREFIX"
           make -j"$(sysctl -n hw.ncpu)"
           make install
-          echo "OPUS_NO_PKG=1" >> "$GITHUB_ENV"
-          echo "OPUS_LIB_DIR=$PREFIX/lib" >> "$GITHUB_ENV"
-          echo "LIBOPUS_LIB_DIR=$PREFIX/lib" >> "$GITHUB_ENV"
-          echo "OPUS_STATIC=1" >> "$GITHUB_ENV"
-          echo "LIBOPUS_STATIC=1" >> "$GITHUB_ENV"
+
+          mkdir -p "$GITHUB_WORKSPACE/desktop/.cargo"
+          printf "%s
+"             "[env]"             "OPUS_NO_PKG = "1""             "OPUS_LIB_DIR = "$PREFIX/lib""             "OPUS_STATIC = "1""             "LIBOPUS_LIB_DIR = "$PREFIX/lib""             "LIBOPUS_STATIC = "1""             > "$GITHUB_WORKSPACE/desktop/.cargo/config.toml"
+
+          echo "=== Opus verification ==="
           ls -lah "$PREFIX/lib"
           test -f "$PREFIX/lib/libopus.a"
       - name: Install frontend dependencies
