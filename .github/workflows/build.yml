@@ -19,7 +19,7 @@ jobs:
     - name: Build Xcode Project
       run: |
         xcodebuild -project SoundCloud.xcodeproj \
-                   -target SoundCloud \
+                   -scheme SoundCloud \
                    -sdk iphoneos \
                    -configuration Release \
                    -derivedDataPath build \
