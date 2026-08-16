@@ -20,7 +20,8 @@ jobs:
       - name: Disable pnpm modules purge prompt
         run: |
           mkdir -p "$HOME/Library/Preferences/pnpm"
-          echo "confirmModulesPurge: false" >> "$HOME/Library/Preferences/pnpm/rc"
+          echo "confirmModulesPurge: false" >> "$HOME/Library/Preferences/pnpm/config.yaml"
+          cat "$HOME/Library/Preferences/pnpm/config.yaml"
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
