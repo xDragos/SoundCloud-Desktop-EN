@@ -1,58 +1,44 @@
 name: Build iOS Simulator
-
 on:
   workflow_dispatch:
   push:
     branches:
       - ios-build
-
 jobs:
-build-ios:
+  build-ios:
     runs-on: macos-latest
     env:
       CI: true
-    env:
-      CI: true
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 11
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-apple-ios-sim
-
       - name: Install frontend dependencies
         working-directory: desktop
         run: pnpm install --frozen-lockfile
-
       - name: Disable Homebrew tap trust check
         run: echo "HOMEBREW_NO_REQUIRE_TAP_TRUST=1" >> "$GITHUB_ENV"
-
       - name: Initialize iOS
         working-directory: desktop
         run: pnpm tauri ios init
-
       - name: Build iOS Simulator
         working-directory: desktop
         run: pnpm tauri ios build --target aarch64-sim
-
       - name: Find Simulator App
         working-directory: desktop
         run: |
           find src-tauri/gen/apple -type d -name "*.app" -print
-
       - name: Package Simulator App
         working-directory: desktop
         run: |
@@ -63,7 +49,6 @@ build-ios:
           fi
           echo "Found: $APP"
           ditto -c -k --sequesterRsrc --keepParent "$APP" SoundCloud-iOS-Simulator.zip
-
       - name: Upload Simulator App
         uses: actions/upload-artifact@v4
         with:
