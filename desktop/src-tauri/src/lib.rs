@@ -110,6 +110,7 @@ pub fn run() {
                 proxy_port,
             }));
             app::diagnostics::mark_session_started(app.handle());
+            #[cfg(all(target_os = "linux", not(mobile)))]
             app::diagnostics::start_linux_fd_monitor(app.handle());
             network::health::start(data_dir.clone(), app.handle().clone(), rt_handle.clone());
             app.manage(Arc::new(DiscordState {
@@ -136,11 +137,16 @@ pub fn run() {
             let analyser_buffer = audio_state.analyser_buffer.clone();
             app.manage(audio_state);
             audio::start_tick_emitter(app.handle());
+            #[cfg(not(mobile))]
             audio::start_media_controls(app.handle());
+            #[cfg(not(mobile))]
             audio::start_default_output_monitor(app.handle());
+            #[cfg(not(mobile))]
             audio::start_fft_thread(app.handle().clone(), analyser_buffer);
 
+            #[cfg(not(mobile))]
             app.manage(app::popover::TrayState::default());
+            #[cfg(not(mobile))]
             app::tray::setup_tray(app).expect("failed to setup tray");
 
             let auth_state =
@@ -153,23 +159,31 @@ pub fn run() {
 
             Ok(())
         })
-        .on_window_event(|window, event| match event {
-            tauri::WindowEvent::CloseRequested { api, .. } => {
-                api.prevent_close();
-                let _ = window.hide();
-            }
-            // Transient popover (tray left-click) dismisses on blur; a pinned one
-            // (opened from the "Mini player" menu) stays put — closed only by its ✕.
-            tauri::WindowEvent::Focused(false)
-            if window.label() == app::popover::LABEL =>
-                {
-                    let st = window.app_handle().state::<app::popover::TrayState>();
-                    if !st.is_pinned() {
+        .on_window_event(|window, event| {
+            #[cfg(not(mobile))]
+            {
+                match event {
+                    tauri::WindowEvent::CloseRequested { api, .. } => {
+                        api.prevent_close();
                         let _ = window.hide();
-                        st.mark_hidden();
                     }
+                    tauri::WindowEvent::Focused(false)
+                        if window.label() == app::popover::LABEL =>
+                    {
+                        let st = window.app_handle().state::<app::popover::TrayState>();
+                        if !st.is_pinned() {
+                            let _ = window.hide();
+                            st.mark_hidden();
+                        }
+                    }
+                    _ => {}
                 }
-            _ => {}
+            }
+
+            #[cfg(mobile)]
+            {
+                let _ = (window, event);
+            }
         })
         .invoke_handler(tauri::generate_handler![
             network::server::get_server_ports,
